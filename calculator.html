@@ -4,13 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGPA & CGPA Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: peachpuff;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        main {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        header h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #f08080;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #e06666;
+        }
+
+        p {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #444;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>SGPA & CGPA and Percentage Calculator</h1>
-    </header>
     <main>
+        <header>
+            <h1>SGPA & CGPA Calculator</h1>
+        </header>
         <section id="sgpa-section">
             <h2>SGPA Calculator</h2>
             <form id="sgpa-form">
@@ -45,6 +107,69 @@
             <p id="percentage-result"></p>
         </section>
     </main>
-    <script src="script.js"></script>
+    <script>
+        // SGPA Calculator
+        document.getElementById('generate-subjects').addEventListener('click', function () {
+            const numSubjects = parseInt(document.getElementById('num-subjects').value);
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= numSubjects; i++) {
+                const label = document.createElement('label');
+                label.textContent = `Marks for Subject ${i}:`;
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.max = '100';
+                input.required = true;
+                input.classList.add('subject-mark');
+                container.appendChild(label);
+                container.appendChild(input);
+            }
+        });
+
+        document.getElementById('sgpa-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const marks = Array.from(document.querySelectorAll('.subject-mark')).map(input => parseFloat(input.value));
+            const sgpa = marks.reduce((a, b) => a + b, 0) / marks.length;
+            document.getElementById('sgpa-result').textContent = `Your SGPA is ${sgpa.toFixed(2)}`;
+        });
+
+        // CGPA Calculator
+        document.getElementById('generate-semesters').addEventListener('click', function () {
+            const numSemesters = parseInt(document.getElementById('num-semesters').value);
+            const container = document.getElementById('semesters-container');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= numSemesters; i++) {
+                const label = document.createElement('label');
+                label.textContent = `SGPA for Semester ${i}:`;
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.max = '10';
+                input.step = '0.01';
+                input.required = true;
+                input.classList.add('semester-sgpa');
+                container.appendChild(label);
+                container.appendChild(input);
+            }
+        });
+
+        document.getElementById('cgpa-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const sgpas = Array.from(document.querySelectorAll('.semester-sgpa')).map(input => parseFloat(input.value));
+            const cgpa = sgpas.reduce((a, b) => a + b, 0) / sgpas.length;
+            document.getElementById('cgpa-result').textContent = `Your CGPA is ${cgpa.toFixed(2)}`;
+        });
+
+        // Percentage Calculator
+        document.getElementById('percentage-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const cgpa = parseFloat(document.getElementById('cgpa-input').value);
+            const percentage = cgpa * 9.5;
+            document.getElementById('percentage-result').textContent = `Your Percentage is ${percentage.toFixed(2)}%`;
+        });
+    </script>
 </body>
 </html>
